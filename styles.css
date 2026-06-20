@@ -798,3 +798,31 @@ textarea.form-control {
     gap: 2rem;
   }
 }
+
+/* Custom Toast Notification */
+.toast {
+  position: fixed;
+  bottom: 30px;
+  left: 50%;
+  transform: translateX(-50%) translateY(100px);
+  background: #0f172a;
+  color: #fff;
+  padding: 1rem 2rem;
+  border-radius: 30px;
+  font-weight: 500;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+  z-index: 2000;
+  opacity: 0;
+  transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.4s;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  font-size: 0.95rem;
+  pointer-events: none;
+  text-align: center;
+  white-space: nowrap;
+}
+
+.toast.show {
+  transform: translateX(-50%) translateY(0);
+  opacity: 1;
+}
+
