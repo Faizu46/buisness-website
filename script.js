@@ -38,7 +38,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   revealElements.forEach(el => observer.observe(el));
 
-  // Bulk Inquiry Form Handler (Direct to WhatsApp)
+  // Bulk Inquiry Form Handler (Dual Email + WhatsApp)
   const inquiryForm = document.getElementById('bulk-inquiry-form');
   if (inquiryForm) {
     inquiryForm.addEventListener('submit', (e) => {
@@ -49,19 +49,44 @@ document.addEventListener('DOMContentLoaded', () => {
       const country = document.getElementById('country').value;
       const requirement = document.getElementById('requirement').value;
       
-      // Construct a professional WhatsApp B2B message
+      // 1. Send email in the background using Web3Forms
+      const formData = new FormData(inquiryForm);
+      const object = Object.fromEntries(formData);
+      const json = JSON.stringify(object);
+      
+      fetch('https://api.web3forms.com/submit', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        },
+        body: json
+      })
+      .then(async (response) => {
+        if (response.status === 200) {
+          console.log("Email inquiry logged successfully.");
+        } else {
+          console.warn("Email logging failed, but proceeding with WhatsApp redirect.");
+        }
+      })
+      .catch(error => {
+        console.error("Network error logging email, but proceeding with WhatsApp redirect:", error);
+      });
+
+      // 2. Construct a professional WhatsApp B2B message
       const message = `Hello Shri Raghavendra Exports,\n\nI would like to make an inquiry regarding bulk spice sourcing.\n\n*Name:* ${name}\n*Email:* ${email}\n*Country:* ${country}\n*Requirement Details:* ${requirement}`;
       
       // Encode URI
       const whatsappUrl = `https://wa.me/919886437109?text=${encodeURIComponent(message)}`;
       
-      // Show custom toast notification
+      // 3. Show custom toast notification
       const toast = document.getElementById('toast');
       if (toast) {
+        toast.textContent = "Sending inquiry & opening WhatsApp...";
         toast.classList.add('show');
       }
       
-      // Redirect to WhatsApp after a brief delay so the user sees the toast
+      // 4. Redirect to WhatsApp after a brief delay so the user sees the toast
       setTimeout(() => {
         if (toast) {
           toast.classList.remove('show');
